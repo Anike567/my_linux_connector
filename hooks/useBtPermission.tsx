@@ -65,11 +65,12 @@ export default function useBtPermission() {
         }
       );
 
-      return(
+      setGranted(
         bluetoothScan === PermissionsAndroid.RESULTS.GRANTED &&
           bluetoothConnect === PermissionsAndroid.RESULTS.GRANTED &&
           fineLocation === PermissionsAndroid.RESULTS.GRANTED
       )
+      return granted
     } catch (err) {
       console.warn("Permission error:", err);
       setGranted(false);

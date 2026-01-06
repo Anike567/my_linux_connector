@@ -17,14 +17,15 @@ export default function Home(): JSX.Element {
       } else {
         Alert.alert("Permission denied!");
       }
-    } else {
-      Alert.alert("Permission already granted");
-    }
+    } 
   };
+  const scanDevices = async()=>{
 
+  }
   return (
     <Container>
-      <Clickable title="Connect" handler={handleClick} />
+      {!granted && <Clickable title="Allow Permission" handler={handleClick} />}
+      {granted && <Clickable title="Scan" handler={scanDevices}/>}
     </Container>
   );
 }
