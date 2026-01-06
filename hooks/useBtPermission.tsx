@@ -6,14 +6,37 @@ export default function useBtPermission() {
 
   useEffect(() => {
     if (Platform.OS === "android") {
-      askPermission();
+      getStatus();
     } else {
-      // iOS handles BLE permissions differently
-      setGranted(true); 
+   
+      setGranted(true);
     }
   }, []);
 
-  async function askPermission() {
+  // Check if permission is already granted
+  const getStatus = async () => {
+    try {
+      const bluetoothScan = await PermissionsAndroid.check(
+        PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN
+      );
+
+      const bluetoothConnect = await PermissionsAndroid.check(
+        PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT
+      );
+
+      const fineLocation = await PermissionsAndroid.check(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+      );
+
+      setGranted(bluetoothScan && bluetoothConnect && fineLocation);
+    } catch (err) {
+      console.warn("Check permission error:", err);
+      setGranted(false);
+    }
+  };
+
+  // Request permissions if not already granted
+  const askPermission = async () => {
     try {
       const bluetoothScan = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
@@ -42,16 +65,16 @@ export default function useBtPermission() {
         }
       );
 
-      setGranted(
+      return(
         bluetoothScan === PermissionsAndroid.RESULTS.GRANTED &&
           bluetoothConnect === PermissionsAndroid.RESULTS.GRANTED &&
           fineLocation === PermissionsAndroid.RESULTS.GRANTED
-      );
+      )
     } catch (err) {
       console.warn("Permission error:", err);
       setGranted(false);
     }
-  }
+  };
 
-  return granted;
+  return { granted, askPermission };
 }
