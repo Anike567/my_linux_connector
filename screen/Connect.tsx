@@ -60,7 +60,7 @@ export default function Connect(): JSX.Element {
         <View>
           {devices.map(device => (
             <ThemedText key={device.id}>
-              {device.localName || device.name || device.id}
+              {device.localName || "unknown"}
             </ThemedText>
           ))}
         </View>
